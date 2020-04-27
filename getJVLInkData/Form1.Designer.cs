@@ -31,9 +31,9 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.AxJVLink1 = new AxJVDTLabLib.AxJVLink();
             this.mnuConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuConfJV = new System.Windows.Forms.ToolStripMenuItem();
+            this.AxJVLink1 = new AxJVDTLabLib.AxJVLink();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.tmrDownload = new System.Windows.Forms.Timer(this.components);
@@ -45,6 +45,7 @@
             this.prgJVRead = new System.Windows.Forms.ProgressBar();
             this.prgDownload = new System.Windows.Forms.ProgressBar();
             this.rtbData = new System.Windows.Forms.RichTextBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AxJVLink1)).BeginInit();
             this.SuspendLayout();
@@ -59,15 +60,6 @@
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // AxJVLink1
-            // 
-            this.AxJVLink1.Enabled = true;
-            this.AxJVLink1.Location = new System.Drawing.Point(460, 31);
-            this.AxJVLink1.Name = "AxJVLink1";
-            this.AxJVLink1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("AxJVLink1.OcxState")));
-            this.AxJVLink1.Size = new System.Drawing.Size(60, 60);
-            this.AxJVLink1.TabIndex = 1;
-            // 
             // mnuConfig
             // 
             this.mnuConfig.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -79,9 +71,18 @@
             // mnuConfJV
             // 
             this.mnuConfJV.Name = "mnuConfJV";
-            this.mnuConfJV.Size = new System.Drawing.Size(180, 22);
+            this.mnuConfJV.Size = new System.Drawing.Size(155, 22);
             this.mnuConfJV.Text = "JLinkの設定(&J)...";
             this.mnuConfJV.Click += new System.EventHandler(this.mnuConfJV_Click);
+            // 
+            // AxJVLink1
+            // 
+            this.AxJVLink1.Enabled = true;
+            this.AxJVLink1.Location = new System.Drawing.Point(460, 31);
+            this.AxJVLink1.Name = "AxJVLink1";
+            this.AxJVLink1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("AxJVLink1.OcxState")));
+            this.AxJVLink1.Size = new System.Drawing.Size(60, 60);
+            this.AxJVLink1.TabIndex = 1;
             // 
             // label1
             // 
@@ -148,6 +149,7 @@
             this.btnGetJVData.TabIndex = 3;
             this.btnGetJVData.Text = "データ取得";
             this.btnGetJVData.UseVisualStyleBackColor = true;
+            this.btnGetJVData.Click += new System.EventHandler(this.btnGetJVData_Click);
             // 
             // prgJVRead
             // 
@@ -172,6 +174,17 @@
             this.rtbData.TabIndex = 7;
             this.rtbData.Text = "";
             // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(471, 112);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(45, 25);
+            this.button2.TabIndex = 3;
+            this.button2.Text = "Test";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -183,6 +196,7 @@
             this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btnGetJVData);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -218,6 +232,7 @@
         private System.Windows.Forms.ProgressBar prgJVRead;
         private System.Windows.Forms.ProgressBar prgDownload;
         private System.Windows.Forms.RichTextBox rtbData;
+        private System.Windows.Forms.Button button2;
     }
 }
 

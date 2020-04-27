@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using Microsoft.Office.Interop.Excel;
+using Microsoft.VisualBasic;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
 
 namespace getJVLInkData
 {
@@ -115,417 +112,166 @@ namespace getJVLInkData
             List<List<cRaceUma>> cRaceUmaListList = new List<List<cRaceUma>>();
             List<cRaceUma> cRaceUmaList = new List<cRaceUma>();
             int num1 = 0;
+            int rowWrite = 1;
             OperateCSV operateCsv = new OperateCSV();
 
-            Microsoft.Office.Interop.Excel.Application application = null;
-            Workbook workbook = null;
-            Workbook workbook2 = null;
-            Worksheet worksheet = null;
+            Microsoft.Office.Interop.Excel.Application appExl = null;
+            Workbook wbCSV = null;
+            Workbook wbTemplate = null;
+            Worksheet wsCSV = null;
+            Worksheet wsTemplate = null;
 
 
             if (this.textBox1.Text == "")
             {
+                System.Media.SystemSounds.Asterisk.Play();
                 int num2 = (int)MessageBox.Show("保存するフォルダを選択してください。");
+                return;
             }
-            else
-            {
-                string text = this.textBox1.Text;
-                this.prgDownload.Maximum = 100;
-                this.prgDownload.Value = 0;
-                if (!this.isRunRace(datetimeTarg))
-                {
-                    int num3 = (int)MessageBox.Show("レースが存在しません。");
-                }
-                else
-                {
-                    List<string> placeInfoX = this.GetPlaceInfoX(datetimeTarg);
-                    if (placeInfoX.Count == 0)
-                    {
-                        int num4 = (int)MessageBox.Show("レースが存在しません。");
-                    }
-                    else
-                    {
-                        foreach (string collplace in placeInfoX)
-                        {
-                            List<List<string>> raceNumInfoX = this.GetRaceNumInfoX(datetimeTarg, collplace);
-                            stringListListList.Add(raceNumInfoX);
-                            foreach (List<string> stringList3 in raceNumInfoX)
-                            {
-                                this.rtbData.Text = "出走馬取得中... " + collplace.Replace("競馬場", "") + Strings.StrConv(stringList3[0], VbStrConv.Wide, 0);
-                                List<cRaceUma> raceUmaX = this.GetRaceUmaX(datetimeTarg, collplace, stringList3[0]);
-                                cRaceUmaListList.Add(raceUmaX);
-                                ++num1;
-                                this.prgDownload.Value = 33 * num1 / (12 * placeInfoX.Count);
-                            }
-                        }
-                        this.prgDownload.Value = 33;
-                        this.rtbData.Text = "調教データ取得中";
-                        string[] tyoukyouDataAllX = this.GetTyoukyouDataAllX(datetimeTarg);
-                        // ISSUE: variable of a compiler-generated type
-                        Microsoft.Office.Interop.Excel.Application instance = (Microsoft.Office.Interop.Excel.Application)Activator.CreateInstance(Marshal.GetTypeFromCLSID(new Guid("00024500-0000-0000-C000-000000000046")));
-                        instance.Visible = false;
 
-                        Workbook workbook1 = instance.Workbooks.Add(System.Type.Missing);
-                        Worksheet worksheet1 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__0.Target((CallSite)Form1.\u003C\u003Eo__11.\u003C\u003Ep__0, workbook1.ActiveSheet);
-                        // ISSUE: reference to a compiler-generated method
-                        // ISSUE: variable of a compiler-generated type
-                        Workbook workbook2 = instance.Workbooks.Open(Path.GetFullPath(str1 + str2), System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing);
-                        // ISSUE: reference to a compiler-generated field
-                        // ISSUE: reference to a compiler-generated field
-                        // ISSUE: variable of a compiler-generated type
-                        Worksheet worksheet2 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__1.Target((CallSite)Form1.\u003C\u003Eo__11.\u003C\u003Ep__1, workbook2.Sheets[(object)str3]);
-                        this.prgDownload.Value = 66;
-                        foreach (List<List<string>> stringListList2 in stringListListList)
-                        {
-                            foreach (List<string> stringList3 in stringListList2)
-                            {
-                                this.rtbData.Text = placeInfoX[index2].Replace("競馬場", "") + Strings.StrConv(stringList3[0], VbStrConv.Wide, 0) + ".csv\n" + (object)(index1 + 1) + " / " + (object)num1;
-                                // ISSUE: variable of a compiler-generated type
-                                Range usedRange1 = worksheet2.UsedRange;
-                                // ISSUE: reference to a compiler-generated field
-                                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__4 == null)
-                                {
-                                    // ISSUE: reference to a compiler-generated field
-                                    Form1.\u003C\u003Eo__11.\u003C\u003Ep__4 = CallSite<Func<CallSite, object, Range>>.Create(Binder.Convert(CSharpBinderFlags.None, typeof(Range), typeof(Form1)));
-                                }
-                                // ISSUE: reference to a compiler-generated field
-                                Func<CallSite, object, Range> target1 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__4.Target;
-                                // ISSUE: reference to a compiler-generated field
-                                CallSite<Func<CallSite, object, Range>> p4 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__4;
-                                // ISSUE: reference to a compiler-generated field
-                                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__3 == null)
-                                {
-                                    // ISSUE: reference to a compiler-generated field
-                                    Form1.\u003C\u003Eo__11.\u003C\u003Ep__3 = CallSite<Func<CallSite, object, object, object, object>>.Create(Binder.GetIndex(CSharpBinderFlags.None, typeof(Form1), (IEnumerable<CSharpArgumentInfo>)new CSharpArgumentInfo[3]
-                                    {
-                                        CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                                        CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                                        CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-                                    }));
-                                }
-                                // ISSUE: reference to a compiler-generated field
-                                Func<CallSite, object, object, object, object> target2 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__3.Target;
-                                // ISSUE: reference to a compiler-generated field
-                                CallSite<Func<CallSite, object, object, object, object>> p3 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__3;
-                                // ISSUE: reference to a compiler-generated field
-                                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__2 == null)
-                                {
-                                    // ISSUE: reference to a compiler-generated field
-                                    Form1.\u003C\u003Eo__11.\u003C\u003Ep__2 = CallSite<Func<CallSite, Worksheet, object>>.Create(Binder.GetMember(CSharpBinderFlags.ResultIndexed, "Range", typeof(Form1), (IEnumerable<CSharpArgumentInfo>)new CSharpArgumentInfo[1]
-                                    {
-                                        CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, (string) null)
-                                    }));
-                                }
-                                // ISSUE: reference to a compiler-generated field
-                                // ISSUE: reference to a compiler-generated field
-                                object obj1 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__2.Target((CallSite)Form1.\u003C\u003Eo__11.\u003C\u003Ep__2, worksheet2);
-                                object cell1 = worksheet2.Cells[(object)3, (object)1];
-                                object cell2 = worksheet2.Cells[(object)usedRange1.Rows.Count, (object)12];
-                                object obj2 = target2((CallSite)p3, obj1, cell1, cell2);
-                                // ISSUE: variable of a compiler-generated type
-                                Range range1 = target1((CallSite)p4, obj2);
-                                // ISSUE: reference to a compiler-generated method
-                                range1.ClearContents();
-                                string[,] arrDataTyokyou;
-                                double[,] arrdblDataTyokyou;
-                                this.PutTyoukyouDataAllX(datetimeTarg, tyoukyouDataAllX, cRaceUmaListList[index1], out arrDataTyokyou, out arrdblDataTyokyou);
-                                worksheet2.Cells[(object)1, (object)1] = (object)("TrainData_" + datetimeTarg.ToString("yyyyMMdd") + "_" + placeInfoX[index2].Replace("競馬場", "") + "_" + stringList3[0]);
-                                worksheet2.Cells[(object)1, (object)2] = (object)stringList3[1];
-                                string str5 = placeInfoX[index2].Replace("競馬場", "") + Strings.StrConv(stringList3[0], VbStrConv.Wide, 0) + ".csv";
-                                int num5 = 0;
-                                for (int index3 = 0; index3 < arrDataTyokyou.GetLength(0); ++index3)
-                                {
-                                    if (arrDataTyokyou[index3, 0] == null)
-                                    {
-                                        num5 = index3;
-                                        break;
-                                    }
-                                }
-                                // ISSUE: reference to a compiler-generated field
-                                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__7 == null)
-                                {
-                                    // ISSUE: reference to a compiler-generated field
-                                    Form1.\u003C\u003Eo__11.\u003C\u003Ep__7 = CallSite<Func<CallSite, object, Range>>.Create(Binder.Convert(CSharpBinderFlags.None, typeof(Range), typeof(Form1)));
-                                }
-                                // ISSUE: reference to a compiler-generated field
-                                Func<CallSite, object, Range> target3 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__7.Target;
-                                // ISSUE: reference to a compiler-generated field
-                                CallSite<Func<CallSite, object, Range>> p7 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__7;
-                                // ISSUE: reference to a compiler-generated field
-                                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__6 == null)
-                                {
-                                    // ISSUE: reference to a compiler-generated field
-                                    Form1.\u003C\u003Eo__11.\u003C\u003Ep__6 = CallSite<Func<CallSite, object, object, object, object>>.Create(Binder.GetIndex(CSharpBinderFlags.None, typeof(Form1), (IEnumerable<CSharpArgumentInfo>)new CSharpArgumentInfo[3]
-                                    {
-                                        CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                                        CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                                        CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-                                    }));
-                                }
-                                // ISSUE: reference to a compiler-generated field
-                                Func<CallSite, object, object, object, object> target4 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__6.Target;
-                                // ISSUE: reference to a compiler-generated field
-                                CallSite<Func<CallSite, object, object, object, object>> p6 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__6;
-                                    // ISSUE: reference to a compiler-generated field
-                                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__5 == null)
-                                {
-                                    // ISSUE: reference to a compiler-generated field
-                                    Form1.\u003C\u003Eo__11.\u003C\u003Ep__5 = CallSite<Func<CallSite, Worksheet, object>>.Create(Binder.GetMember(CSharpBinderFlags.ResultIndexed, "Range", typeof(Form1), (IEnumerable<CSharpArgumentInfo>)new CSharpArgumentInfo[1]
-                                    {
-                                        CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, (string) null)
-                                    }));
-                                }
-                                // ISSUE: reference to a compiler-generated field
-                                // ISSUE: reference to a compiler-generated field
-                                object obj3 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__5.Target((CallSite)Form1.\u003C\u003Eo__11.\u003C\u003Ep__5, worksheet2);
-                                object cell3 = worksheet2.Cells[(object)3, (object)1];
-                                object cell4 = worksheet2.Cells[(object)(num5 + 2), (object)3];
-                                object obj4 = target4((CallSite)p6, obj3, cell3, cell4);
-                                // ISSUE: variable of a compiler-generated type
-                                Range range2 = target3((CallSite)p7, obj4);
-                                // ISSUE: reference to a compiler-generated method
-                                range2.set_Value(System.Type.Missing, (object)arrDataTyokyou);
-                                // ISSUE: reference to a compiler-generated field
-                                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__10 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__10 = CallSite<Func<CallSite, object, Range>>.Create(Binder.Convert(CSharpBinderFlags.None, typeof (Range), typeof (Form1)));
-                }
-                // ISSUE: reference to a compiler-generated field
-                Func<CallSite, object, Range> target5 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__10.Target;
-                // ISSUE: reference to a compiler-generated field
-                CallSite<Func<CallSite, object, Range>> p10 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__10;
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__9 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__9 = CallSite<Func<CallSite, object, object, object, object>>.Create(Binder.GetIndex(CSharpBinderFlags.None, typeof (Form1), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[3]
-                  {
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-                  }));
-                }
-                // ISSUE: reference to a compiler-generated field
-                Func<CallSite, object, object, object, object> target6 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__9.Target;
-                // ISSUE: reference to a compiler-generated field
-                CallSite<Func<CallSite, object, object, object, object>> p9 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__9;
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__8 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__8 = CallSite<Func<CallSite, Worksheet, object>>.Create(Binder.GetMember(CSharpBinderFlags.ResultIndexed, "Range", typeof (Form1), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[1]
-                  {
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, (string) null)
-                  }));
-                }
-                // ISSUE: reference to a compiler-generated field
-                // ISSUE: reference to a compiler-generated field
-                object obj5 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__8.Target((CallSite) Form1.\u003C\u003Eo__11.\u003C\u003Ep__8, worksheet2);
-                object cell5 = worksheet2.Cells[(object) 3, (object) 4];
-                object cell6 = worksheet2.Cells[(object) (num5 + 2), (object) 12];
-                object obj6 = target6((CallSite) p9, obj5, cell5, cell6);
-                // ISSUE: variable of a compiler-generated type
-                Range range3 = target5((CallSite) p10, obj6);
-                // ISSUE: reference to a compiler-generated method
-                range3.set_Value(System.Type.Missing, (object) arrdblDataTyokyou);
-                // ISSUE: variable of a compiler-generated type
-                Range usedRange2 = worksheet2.UsedRange;
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__13 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__13 = CallSite<Func<CallSite, object, Range>>.Create(Binder.Convert(CSharpBinderFlags.None, typeof (Range), typeof (Form1)));
-                }
-                // ISSUE: reference to a compiler-generated field
-                Func<CallSite, object, Range> target7 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__13.Target;
-                // ISSUE: reference to a compiler-generated field
-                CallSite<Func<CallSite, object, Range>> p13 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__13;
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__12 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__12 = CallSite<Func<CallSite, object, object, object, object>>.Create(Binder.GetIndex(CSharpBinderFlags.None, typeof (Form1), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[3]
-                  {
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-                  }));
-                }
-                // ISSUE: reference to a compiler-generated field
-                Func<CallSite, object, object, object, object> target8 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__12.Target;
-                // ISSUE: reference to a compiler-generated field
-                CallSite<Func<CallSite, object, object, object, object>> p12 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__12;
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__11 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__11 = CallSite<Func<CallSite, Worksheet, object>>.Create(Binder.GetMember(CSharpBinderFlags.ResultIndexed, "Range", typeof (Form1), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[1]
-                  {
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, (string) null)
-                  }));
-                }
-                // ISSUE: reference to a compiler-generated field
-                // ISSUE: reference to a compiler-generated field
-                object obj7 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__11.Target((CallSite) Form1.\u003C\u003Eo__11.\u003C\u003Ep__11, worksheet2);
-                object cell7 = worksheet2.Cells[(object) 3, (object) 1];
-                object cell8 = worksheet2.Cells[(object) usedRange2.Rows.Count, (object) 12];
-                object obj8 = target8((CallSite) p12, obj7, cell7, cell8);
-                // ISSUE: variable of a compiler-generated type
-                Range range4 = target7((CallSite) p13, obj8);
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__14 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__14 = CallSite<Action<CallSite, Range, object, XlSortOrder>>.Create(Binder.InvokeMember(CSharpBinderFlags.ResultDiscarded, "Sort", (IEnumerable<System.Type>) null, typeof (Form1), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[3]
-                  {
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, (string) null),
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.NamedArgument, "Key1"),
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType | CSharpArgumentInfoFlags.Constant | CSharpArgumentInfoFlags.NamedArgument, "Order1")
-                  }));
-                }
-                // ISSUE: reference to a compiler-generated field
-                // ISSUE: reference to a compiler-generated field
-                Form1.\u003C\u003Eo__11.\u003C\u003Ep__14.Target((CallSite) Form1.\u003C\u003Eo__11.\u003C\u003Ep__14, range4, worksheet2.Cells[(object) 3, (object) 12], XlSortOrder.xlAscending);
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__15 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__15 = CallSite<Func<CallSite, object, object[,]>>.Create(Binder.Convert(CSharpBinderFlags.None, typeof (object[,]), typeof (Form1)));
-                }
-                // ISSUE: reference to a compiler-generated field
-                // ISSUE: reference to a compiler-generated field
-                // ISSUE: reference to a compiler-generated method
-                object[,] arrData = Form1.\u003C\u003Eo__11.\u003C\u003Ep__15.Target((CallSite) Form1.\u003C\u003Eo__11.\u003C\u003Ep__15, range4.get_Value(System.Type.Missing));
-                operateCsv.ConvertObjectToCsv(arrData, text + str5);
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__18 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__18 = CallSite<Func<CallSite, object, Range>>.Create(Binder.Convert(CSharpBinderFlags.None, typeof (Range), typeof (Form1)));
-                }
-                // ISSUE: reference to a compiler-generated field
-                Func<CallSite, object, Range> target9 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__18.Target;
-                // ISSUE: reference to a compiler-generated field
-                CallSite<Func<CallSite, object, Range>> p18 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__18;
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__17 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__17 = CallSite<Func<CallSite, object, object, object, object>>.Create(Binder.GetIndex(CSharpBinderFlags.None, typeof (Form1), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[3]
-                  {
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-                  }));
-                }
-                // ISSUE: reference to a compiler-generated field
-                Func<CallSite, object, object, object, object> target10 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__17.Target;
-                // ISSUE: reference to a compiler-generated field
-                CallSite<Func<CallSite, object, object, object, object>> p17 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__17;
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__16 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__16 = CallSite<Func<CallSite, Worksheet, object>>.Create(Binder.GetMember(CSharpBinderFlags.ResultIndexed, "Range", typeof (Form1), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[1]
-                  {
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, (string) null)
-                  }));
-                }
-                // ISSUE: reference to a compiler-generated field
-                // ISSUE: reference to a compiler-generated field
-                object obj9 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__16.Target((CallSite) Form1.\u003C\u003Eo__11.\u003C\u003Ep__16, worksheet2);
-                object cell9 = worksheet2.Cells[(object) 2, (object) 152];
-                object cell10 = worksheet2.Cells[(object) 22, (object) 158];
-                object obj10 = target10((CallSite) p17, obj9, cell9, cell10);
-                // ISSUE: variable of a compiler-generated type
-                Range range5 = target9((CallSite) p18, obj10);
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__21 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__21 = CallSite<Func<CallSite, object, Range>>.Create(Binder.Convert(CSharpBinderFlags.None, typeof (Range), typeof (Form1)));
-                }
-                // ISSUE: reference to a compiler-generated field
-                Func<CallSite, object, Range> target11 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__21.Target;
-                // ISSUE: reference to a compiler-generated field
-                CallSite<Func<CallSite, object, Range>> p21 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__21;
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__20 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__20 = CallSite<Func<CallSite, object, object, object, object>>.Create(Binder.GetIndex(CSharpBinderFlags.None, typeof (Form1), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[3]
-                  {
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-                  }));
-                }
-                // ISSUE: reference to a compiler-generated field
-                Func<CallSite, object, object, object, object> target12 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__20.Target;
-                // ISSUE: reference to a compiler-generated field
-                CallSite<Func<CallSite, object, object, object, object>> p20 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__20;
-                // ISSUE: reference to a compiler-generated field
-                if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__19 == null)
-                {
-                  // ISSUE: reference to a compiler-generated field
-                  Form1.\u003C\u003Eo__11.\u003C\u003Ep__19 = CallSite<Func<CallSite, Worksheet, object>>.Create(Binder.GetMember(CSharpBinderFlags.ResultIndexed, "Range", typeof (Form1), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[1]
-                  {
-                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, (string) null)
-                  }));
-                }
-                // ISSUE: reference to a compiler-generated field
-                // ISSUE: reference to a compiler-generated field
-                object obj11 = Form1.\u003C\u003Eo__11.\u003C\u003Ep__19.Target((CallSite) Form1.\u003C\u003Eo__11.\u003C\u003Ep__19, worksheet1);
-                object cell11 = worksheet1.Cells[(object) (22 * index1 + 1), (object) 1];
-                object cell12 = worksheet1.Cells[(object) (22 * index1 + 21), (object) 7];
-                object obj12 = target12((CallSite) p20, obj11, cell11, cell12);
-                // ISSUE: reference to a compiler-generated method
-                // ISSUE: reference to a compiler-generated method
-                target11((CallSite) p21, obj12).set_Value(System.Type.Missing, range5.get_Value(System.Type.Missing));
-                instance.DisplayAlerts = false;
-                // ISSUE: reference to a compiler-generated method
-                workbook2.Save();
-                instance.DisplayAlerts = true;
-                ++index1;
-                this.prgDownload.Value = 66 + 34 * index1 / num1;
-              }
-              ++index2;
-            }
-            // ISSUE: variable of a compiler-generated type
-            Range usedRange = worksheet1.UsedRange;
-            // ISSUE: reference to a compiler-generated field
-            if (Form1.\u003C\u003Eo__11.\u003C\u003Ep__22 == null)
+            string text = this.textBox1.Text;
+            this.prgDownload.Maximum = 100;
+            this.prgDownload.Value = 0;
+            if (!this.isRunRace(datetimeTarg))
             {
-              // ISSUE: reference to a compiler-generated field
-              Form1.\u003C\u003Eo__11.\u003C\u003Ep__22 = CallSite<Func<CallSite, object, object[,]>>.Create(Binder.Convert(CSharpBinderFlags.None, typeof (object[,]), typeof (Form1)));
+                System.Media.SystemSounds.Asterisk.Play();
+                int num3 = (int)MessageBox.Show("レースが存在しません。");
+                return;
             }
-            // ISSUE: reference to a compiler-generated field
-            // ISSUE: reference to a compiler-generated field
-            // ISSUE: reference to a compiler-generated method
-            object[,] objArray = Form1.\u003C\u003Eo__11.\u003C\u003Ep__22.Target((CallSite) Form1.\u003C\u003Eo__11.\u003C\u003Ep__22, usedRange.get_Value(System.Type.Missing));
+
+            List<string> placeInfoX = this.GetPlaceInfoX(datetimeTarg);
+            if (placeInfoX.Count == 0)
+            {
+                System.Media.SystemSounds.Asterisk.Play();
+                int num4 = (int)MessageBox.Show("レースが存在しません。");
+                return;
+            }
+
+            foreach (string collplace in placeInfoX)
+            {
+                List<List<string>> raceNumInfoX = this.GetRaceNumInfoX(datetimeTarg, collplace);
+                stringListListList.Add(raceNumInfoX);
+                foreach (List<string> stringList3 in raceNumInfoX)
+                {
+                    this.rtbData.Text = "出走馬取得中... " + collplace.Replace("競馬場", "") + Strings.StrConv(stringList3[0], VbStrConv.Wide, 0);
+                    List<cRaceUma> raceUmaX = this.GetRaceUmaX(datetimeTarg, collplace, stringList3[0]);
+                    cRaceUmaListList.Add(raceUmaX);
+                    ++num1;
+                    this.prgDownload.Value = 33 * num1 / (12 * placeInfoX.Count);
+                }
+            }
+
+            this.prgDownload.Value = 33;
+            this.rtbData.Text = "調教データ取得中";
+            string[] tyoukyouDataAllX = this.GetTyoukyouDataAllX(datetimeTarg);
+
+            appExl = new Microsoft.Office.Interop.Excel.Application();
+            appExl.Visible = false;
+            wbCSV = appExl.Workbooks.Add(System.Type.Missing);
+            wsCSV = wbCSV.ActiveSheet;
+            wbTemplate = appExl.Workbooks.Open(Path.GetFullPath(str1 + str2));
+            wsTemplate = wbTemplate.Sheets[str3];
+
+            this.prgDownload.Value = 66;
+            foreach (List<List<string>> stringListList2 in stringListListList)
+            {
+                foreach (List<string> stringList3 in stringListList2)
+                {
+                    this.rtbData.Text = placeInfoX[index2].Replace("競馬場", "") +
+                        Strings.StrConv(stringList3[0], VbStrConv.Wide, 0) +
+                        ".csv\n" + (object)(index1 + 1) + " / " + (object)num1;
+
+                    // テンプレートシートの値の削除
+                    Range usedRangeTemp = wsTemplate.UsedRange;
+                    object cell1 = wsTemplate.Cells[3, 1];
+                    object cell2 = wsTemplate.Cells[usedRangeTemp.Rows.Count, 12];
+                    Range rangeTemp = wsTemplate.Range[cell1, cell2];
+                    rangeTemp.ClearContents();
+
+                    // 調教データを反映
+                    string[,] arrDataTyokyou;
+                    double[,] arrdblDataTyokyou;
+                    this.PutTyoukyouDataAllX(datetimeTarg, tyoukyouDataAllX,
+                        cRaceUmaListList[index1], out arrDataTyokyou, out arrdblDataTyokyou);
+
+                    for (int i = 0; i < arrdblDataTyokyou.GetLength(0); i++)
+                    {
+                        // Console.WriteLine(arrdblDataTyokyou[i, 0]);
+                        if(arrDataTyokyou[i, 1] == "")
+                        {
+                            break;
+                        }
+                        for (int j = 0; j < 3; j++)
+                        {
+                            wsTemplate.Cells[i + 3, j + 1].Value = arrDataTyokyou[i, j];
+                        }
+                        for (int j = 3; j < 12; j++)
+                        {
+                            wsTemplate.Cells[i + 3, j + 1].Value = arrdblDataTyokyou[i, j - 3];
+                        }
+                    }
+
+                    // ファイル名の入力
+                    wsTemplate.Cells[1, 1] = "TrainData_" +
+                        datetimeTarg.ToString("yyyyMMdd") + "_" +
+                        placeInfoX[index2].Replace("競馬場", "") + "_" +
+                        stringList3[0];
+                    wsTemplate.Cells[1, 2] = stringList3[1];
+                    string str5 = placeInfoX[index2].Replace("競馬場", "") +
+                        Strings.StrConv(stringList3[0], VbStrConv.Wide, 0) + ".csv";
+
+                    // 小数点の表示
+                    usedRangeTemp = wsTemplate.UsedRange;
+                    cell1 = wsTemplate.Cells[3, 5];
+                    cell2 = wsTemplate.Cells[usedRangeTemp.Rows.Count, 12];
+                    rangeTemp = wsTemplate.Range[cell1, cell2];
+                    rangeTemp.NumberFormatLocal = "0.0";
+
+                    // 昇順ソート
+                    cell1 = wsTemplate.Cells[3, 1];
+                    cell2 = wsTemplate.Cells[usedRangeTemp.Rows.Count, 12];
+                    rangeTemp = wsTemplate.Range[cell1, cell2];
+                    rangeTemp.Sort(wsTemplate.Cells[3, 12], XlSortOrder.xlAscending);
+
+                    // 結果の反映
+                    cell1 = wsTemplate.Cells[2, 152];
+                    cell2 = wsTemplate.Cells[22, 158];
+                    rangeTemp = wsTemplate.Range[cell1, cell2];
+                    rangeTemp.Copy();
+                    wsCSV.Cells[rowWrite, 1].PasteSpecial(XlPasteType.xlPasteValues);
+                    rowWrite += 22;
+
+                    appExl.DisplayAlerts = false;
+                    wbTemplate.Save();
+                    appExl.DisplayAlerts = true;
+                    ++index1;
+                    this.prgDownload.Value = 66 + 34 * index1 / num1;
+
+                    break;
+                }
+                ++index2;
+                break;
+            }
+
             string str6 = "c" + str4 + ".csv";
-            instance.DisplayAlerts = false;
-            // ISSUE: reference to a compiler-generated method
-            worksheet1.SaveAs(text + str6, (object) 6, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing);
-            // ISSUE: reference to a compiler-generated method
-            workbook1.Close(System.Type.Missing, System.Type.Missing, System.Type.Missing);
-            // ISSUE: reference to a compiler-generated method
-            workbook2.Close(System.Type.Missing, System.Type.Missing, System.Type.Missing);
-            instance.DisplayAlerts = true;
-            Marshal.ReleaseComObject((object) worksheet2);
-            Marshal.ReleaseComObject((object) workbook2);
-            Marshal.ReleaseComObject((object) worksheet1);
-            Marshal.ReleaseComObject((object) workbook1);
-            Marshal.ReleaseComObject((object) instance);
+            appExl.DisplayAlerts = false;
+            wbCSV.SaveAs(text + str6, 6);
+            wbCSV.Close(System.Type.Missing, System.Type.Missing, System.Type.Missing);
+            wbTemplate.Close(System.Type.Missing, System.Type.Missing, System.Type.Missing);
+            appExl.DisplayAlerts = true;
+
+            appExl.Quit();
+            Marshal.ReleaseComObject(wsTemplate);
+            Marshal.ReleaseComObject(wbTemplate);
+            Marshal.ReleaseComObject(wsCSV);
+            Marshal.ReleaseComObject(wbCSV);
+            Marshal.ReleaseComObject(appExl);
+
             this.rtbData.Text = str4 + " 調教データ取得完了しました。";
             this.AxJVLink1.JVClose();
-            SystemSounds.Asterisk.Play();
+            System.Media.SystemSounds.Asterisk.Play();
             this.prgDownload.Value = 100;
-          }
         }
-      }
-    }
 
         private List<string> GetPlaceInfoX(DateTime datetimeTarg)
         {
@@ -956,7 +702,7 @@ namespace getJVLInkData
                         {
                             JVData_Struct.JV_HC_HANRO jvHcHanro = new JVData_Struct.JV_HC_HANRO();
                             jvHcHanro.SetDataB(ref dataTyokyo[index2]);
-                            string codeName = this.objCodeConv.GetCodeName("2301", jvHcHanro.TresenKubun, (short)2);
+                            string codeName = this.objCodeConv.GetCodeName("2301", jvHcHanro.TresenKubun + 1, (short)2);
                             arrDataTyokyou[index1, 0] = codeName;
                             arrDataTyokyou[index1, 1] = jvHcHanro.ChokyoDate.Year + jvHcHanro.ChokyoDate.Month + jvHcHanro.ChokyoDate.Day;
                             string bamei = listUma.Bamei;
@@ -1063,6 +809,65 @@ namespace getJVLInkData
                 return true;
             int num8 = (int)MessageBox.Show("選択した日付の開催はありません。");
             return false;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            double[,] arrdblDataTyokyou;
+            arrdblDataTyokyou = new double[2000, 9];
+            Console.WriteLine(arrdblDataTyokyou.GetLength(1));
+
+
+            string str1 = System.Windows.Forms.Application.StartupPath + "\\";
+            string str2 = "Template.xlsx";
+            string str3 = "Template";
+            DateTime datetimeTarg = this.dateTimePicker1.Value;
+            string str4 = datetimeTarg.ToString("yyyyMMdd");
+
+            Microsoft.Office.Interop.Excel.Application appExl = null;
+            Workbook workbook1 = null;
+            Workbook workbook2 = null;
+            Worksheet worksheet1 = null;
+            Worksheet worksheet2 = null;
+
+            appExl = new Microsoft.Office.Interop.Excel.Application();
+            appExl.Visible = true;
+
+            workbook1 = appExl.Workbooks.Add(System.Type.Missing);
+            worksheet1 = workbook1.ActiveSheet;
+            workbook2 = appExl.Workbooks.Open(Path.GetFullPath(str1 + str2),
+                System.Type.Missing, System.Type.Missing, System.Type.Missing,
+                System.Type.Missing, System.Type.Missing, System.Type.Missing,
+                System.Type.Missing, System.Type.Missing, System.Type.Missing,
+                System.Type.Missing, System.Type.Missing, System.Type.Missing,
+                System.Type.Missing, System.Type.Missing);
+            worksheet2 = workbook2.Sheets[str3];
+
+            Range usedRange2 = worksheet2.UsedRange;
+            object cell1 = worksheet2.Cells[2, 152];
+            object cell2 = worksheet2.Cells[22, 158];
+            Range range2 = worksheet2.Range[cell1, cell2];
+
+            int WriteR = 1;
+            worksheet2.Copy(worksheet1);
+            worksheet1 = workbook1.ActiveSheet;
+            range2.Copy(worksheet1.Cells[WriteR, 1]);
+
+            string str6 = "c" + str4 + ".csv";
+            string text = this.textBox1.Text;
+
+            appExl.DisplayAlerts = false;
+            workbook1.SaveAs(text + str6, 6);
+            workbook1.Close(System.Type.Missing, System.Type.Missing, System.Type.Missing);
+            workbook2.Close(System.Type.Missing, System.Type.Missing, System.Type.Missing);
+            appExl.DisplayAlerts = true;
+
+            appExl.Quit();
+            Marshal.ReleaseComObject(worksheet2);
+            Marshal.ReleaseComObject(workbook2);
+            //Marshal.ReleaseComObject(worksheet1);
+            //Marshal.ReleaseComObject(workbook1);
+            Marshal.ReleaseComObject(appExl);
         }
     }
 }
