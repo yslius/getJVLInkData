@@ -81,7 +81,7 @@
             this.AxJVLink1.Location = new System.Drawing.Point(460, 31);
             this.AxJVLink1.Name = "AxJVLink1";
             this.AxJVLink1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("AxJVLink1.OcxState")));
-            this.AxJVLink1.Size = new System.Drawing.Size(60, 60);
+            this.AxJVLink1.Size = new System.Drawing.Size(192, 192);
             this.AxJVLink1.TabIndex = 1;
             // 
             // label1
@@ -183,6 +183,7 @@
             this.button2.TabIndex = 3;
             this.button2.Text = "Test";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form1
@@ -205,7 +206,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "JV-Link調教データ取得ツール";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

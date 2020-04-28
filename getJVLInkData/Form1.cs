@@ -98,6 +98,9 @@ namespace getJVLInkData
 
         private void btnGetJVData_Click(object sender, EventArgs e)
         {
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+
             this.button1.Enabled = false;
             this.dateTimePicker1.Enabled = false;
             this.btnGetJVData.Enabled = false;
@@ -167,10 +170,10 @@ namespace getJVLInkData
 
             this.prgDownload.Value = 33;
             this.rtbData.Text = "調教データ取得中";
-            string[] tyoukyouDataAllX = this.GetTyoukyouDataAllX(datetimeTarg);
+            List<string> tyoukyouDataAllX = this.GetTyoukyouDataAllX(datetimeTarg);
 
             appExl = new Microsoft.Office.Interop.Excel.Application();
-            appExl.Visible = true;
+            appExl.Visible = false;
             wbCSV = appExl.Workbooks.Add(System.Type.Missing);
             wsCSV = wbCSV.ActiveSheet;
             wbTemplate = appExl.Workbooks.Open(Path.GetFullPath(str1 + str2));
@@ -199,23 +202,6 @@ namespace getJVLInkData
                     double[,] arrdblDataTyokyou;
                     long cntRow = this.PutTyoukyouDataAllX(datetimeTarg, tyoukyouDataAllX,
                         cRaceUmaListList[index1], out arrDataTyokyou, out arrdblDataTyokyou);
-
-                    //for (int i = 0; i < arrdblDataTyokyou.GetLength(0); i++)
-                    //{
-                    //    // Console.WriteLine(arrdblDataTyokyou[i, 0]);
-                    //    if(arrDataTyokyou[i, 1] == "")
-                    //    {
-                    //        break;
-                    //    }
-                    //    for (int j = 0; j < 3; j++)
-                    //    {
-                    //        wsTemplate.Cells[i + 3, j + 1].Value = arrDataTyokyou[i, j];
-                    //    }
-                    //    for (int j = 3; j < 12; j++)
-                    //    {
-                    //        wsTemplate.Cells[i + 3, j + 1].Value = arrdblDataTyokyou[i, j - 3];
-                    //    }
-                    //}
 
                     cell1 = wsTemplate.Cells[3, 1];
                     cell2 = wsTemplate.Cells[3 + cntRow -1, 3];
@@ -256,22 +242,23 @@ namespace getJVLInkData
                     wsCSV.Cells[rowWrite, 1].PasteSpecial(XlPasteType.xlPasteValues);
                     rowWrite += 22;
 
-                    appExl.DisplayAlerts = false;
-                    wbTemplate.Save();
-                    appExl.DisplayAlerts = true;
+                    //appExl.DisplayAlerts = false;
+                    //wbTemplate.Save();
+                    //appExl.DisplayAlerts = true;
                     ++index1;
                     this.prgDownload.Value = 66 + 34 * index1 / num1;
 
-                    break;
+                    //break;
                 }
                 ++index2;
-                break;
+                //break;
             }
 
             string str6 = "c" + str4 + ".csv";
             appExl.DisplayAlerts = false;
             wbCSV.SaveAs(text + str6, 6);
             wbCSV.Close(System.Type.Missing, System.Type.Missing, System.Type.Missing);
+            wbTemplate.Save();
             wbTemplate.Close(System.Type.Missing, System.Type.Missing, System.Type.Missing);
             appExl.DisplayAlerts = true;
 
@@ -290,6 +277,10 @@ namespace getJVLInkData
             this.button1.Enabled = true;
             this.dateTimePicker1.Enabled = true;
             this.btnGetJVData.Enabled = true;
+
+            sw.Stop();
+            TimeSpan ts = sw.Elapsed;
+            this.rtbData.Text = $"処理時間：{(ts.Minutes*60) + ts.Seconds}秒";
         }
 
         private List<string> GetPlaceInfoX(DateTime datetimeTarg)
@@ -320,6 +311,7 @@ namespace getJVLInkData
                     if (readcount > 0)
                     {
                         bool flag = false;
+                        bool isFind = false;
                         do
                         {
                             System.Windows.Forms.Application.DoEvents();
@@ -357,14 +349,24 @@ namespace getJVLInkData
                                         string codeName = this.objCodeConv.GetCodeName("2001", jvYsSchedule.id.JyoCD, (short)1);
                                         if (dateTime.Date == datetimeTarg.Date)
                                         {
-                                            stringList.Add(codeName);
-                                            goto case -3;
+                                            isFind = false;
+                                            foreach (string ele in stringList)
+                                            {
+                                                if (ele == codeName)
+                                                {
+                                                    isFind = true;
+                                                }
+                                            }
+                                            if (!isFind)
+                                            {
+                                                stringList.Add(codeName);
+                                                goto case -3;
+                                            }
                                         }
                                         else
                                             goto case -3;
                                     }
-                                    else
-                                        goto case -3;
+                                    goto case -3;
                             }
                         }
                         while (!flag);
@@ -602,9 +604,10 @@ namespace getJVLInkData
             return cRaceUmaList;
         }
 
-        private string[] GetTyoukyouDataAllX(DateTime datetimeTarg)
+        private List<string> GetTyoukyouDataAllX(DateTime datetimeTarg)
         {
-            string[] strArray = new string[300000];
+            //string[] strArray = new string[300000];
+            List<string> listStr = new List<string>();
             int index = 0;
             try
             {
@@ -613,7 +616,7 @@ namespace getJVLInkData
                 this.tmrDownload.Enabled = false;
                 this.prgJVRead.Value = 0;
                 string dataspec = "SLOP";
-                TimeSpan timeSpan1 = new TimeSpan(180, 0, 0, 0);
+                TimeSpan timeSpan1 = new TimeSpan(181, 0, 0, 0);
                 DateTime dateTime1 = datetimeTarg - timeSpan1;
                 string str = dateTime1.ToString("yyyyMMdd");
                 dateTime1 = DateTime.Now;
@@ -681,7 +684,8 @@ namespace getJVLInkData
                             }
                             if (dateTime2 > datetimeTarg)
                                 flag1 = true;
-                            strArray[index] = buff;
+                            //strArray[index] = buff;
+                            listStr.Add(buff);
                             ++index;
                             goto case -3;
                     }
@@ -690,7 +694,7 @@ namespace getJVLInkData
             }
             catch (Exception ex)
             {
-                return (string[])null;
+                return (List<string>)null;
             }
             int num5 = this.AxJVLink1.JVClose();
             if (num5 != 0)
@@ -698,25 +702,28 @@ namespace getJVLInkData
                 int num6 = (int)MessageBox.Show("JVClose エラー：" + (object)num5);
             }
             this.prgJVRead.Value = this.prgJVRead.Maximum;
-            return strArray;
+            //return strArray;
+            return listStr;
         }
 
-        private long PutTyoukyouDataAllX(DateTime datetimeTarg, string[] dataTyokyo, 
+        private long PutTyoukyouDataAllX(DateTime datetimeTarg, List<string> dataTyokyos, 
             List<cRaceUma> ListUmas, out string[,] arrDataTyokyou, out double[,] arrdblDataTyokyou)
         {
             arrDataTyokyou = new string[2000, 3];
             arrdblDataTyokyou = new double[2000, 9];
             int index1 = 0;
-            for (int index2 = 0; index2 < dataTyokyo.Length && dataTyokyo[index2] != null; ++index2)
+            //for (int index2 = 0; index2 < dataTyokyo.Length && dataTyokyo[index2] != null; ++index2)
+            foreach (string dataTyokyo in dataTyokyos)
             {
-                if (dataTyokyo[index2].Substring(55, 3) != "000")
+                if (dataTyokyo.Substring(55, 3) != "000")
                 {
                     foreach (cRaceUma listUma in ListUmas)
                     {
-                        if (listUma.KettoNum == dataTyokyo[index2].Substring(24, 10))
+                        if (listUma.KettoNum == dataTyokyo.Substring(24, 10))
                         {
                             JVData_Struct.JV_HC_HANRO jvHcHanro = new JVData_Struct.JV_HC_HANRO();
-                            jvHcHanro.SetDataB(ref dataTyokyo[index2]);
+                            string dataTyokyoTmp = dataTyokyo;
+                            jvHcHanro.SetDataB(ref dataTyokyoTmp);
                             string TresenKubun = (int.Parse(jvHcHanro.TresenKubun) + 1).ToString();
                             string codeName = this.objCodeConv.GetCodeName("2301",TresenKubun, (short)2);
                             arrDataTyokyou[index1, 0] = codeName;
