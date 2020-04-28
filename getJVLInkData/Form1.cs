@@ -98,6 +98,10 @@ namespace getJVLInkData
 
         private void btnGetJVData_Click(object sender, EventArgs e)
         {
+            this.button1.Enabled = false;
+            this.dateTimePicker1.Enabled = false;
+            this.btnGetJVData.Enabled = false;
+
             int index1 = 0;
             int index2 = 0;
             string str1 = System.Windows.Forms.Application.StartupPath + "\\";
@@ -166,7 +170,7 @@ namespace getJVLInkData
             string[] tyoukyouDataAllX = this.GetTyoukyouDataAllX(datetimeTarg);
 
             appExl = new Microsoft.Office.Interop.Excel.Application();
-            appExl.Visible = false;
+            appExl.Visible = true;
             wbCSV = appExl.Workbooks.Add(System.Type.Missing);
             wsCSV = wbCSV.ActiveSheet;
             wbTemplate = appExl.Workbooks.Open(Path.GetFullPath(str1 + str2));
@@ -182,6 +186,8 @@ namespace getJVLInkData
                         ".csv\n" + (object)(index1 + 1) + " / " + (object)num1;
 
                     // テンプレートシートの値の削除
+                    wsTemplate.Cells[1, 1].ClearContents();
+                    wsTemplate.Cells[1, 2].ClearContents();
                     Range usedRangeTemp = wsTemplate.UsedRange;
                     object cell1 = wsTemplate.Cells[3, 1];
                     object cell2 = wsTemplate.Cells[usedRangeTemp.Rows.Count, 12];
@@ -191,25 +197,34 @@ namespace getJVLInkData
                     // 調教データを反映
                     string[,] arrDataTyokyou;
                     double[,] arrdblDataTyokyou;
-                    this.PutTyoukyouDataAllX(datetimeTarg, tyoukyouDataAllX,
+                    long cntRow = this.PutTyoukyouDataAllX(datetimeTarg, tyoukyouDataAllX,
                         cRaceUmaListList[index1], out arrDataTyokyou, out arrdblDataTyokyou);
 
-                    for (int i = 0; i < arrdblDataTyokyou.GetLength(0); i++)
-                    {
-                        // Console.WriteLine(arrdblDataTyokyou[i, 0]);
-                        if(arrDataTyokyou[i, 1] == "")
-                        {
-                            break;
-                        }
-                        for (int j = 0; j < 3; j++)
-                        {
-                            wsTemplate.Cells[i + 3, j + 1].Value = arrDataTyokyou[i, j];
-                        }
-                        for (int j = 3; j < 12; j++)
-                        {
-                            wsTemplate.Cells[i + 3, j + 1].Value = arrdblDataTyokyou[i, j - 3];
-                        }
-                    }
+                    //for (int i = 0; i < arrdblDataTyokyou.GetLength(0); i++)
+                    //{
+                    //    // Console.WriteLine(arrdblDataTyokyou[i, 0]);
+                    //    if(arrDataTyokyou[i, 1] == "")
+                    //    {
+                    //        break;
+                    //    }
+                    //    for (int j = 0; j < 3; j++)
+                    //    {
+                    //        wsTemplate.Cells[i + 3, j + 1].Value = arrDataTyokyou[i, j];
+                    //    }
+                    //    for (int j = 3; j < 12; j++)
+                    //    {
+                    //        wsTemplate.Cells[i + 3, j + 1].Value = arrdblDataTyokyou[i, j - 3];
+                    //    }
+                    //}
+
+                    cell1 = wsTemplate.Cells[3, 1];
+                    cell2 = wsTemplate.Cells[3 + cntRow -1, 3];
+                    rangeTemp = wsTemplate.Range[cell1, cell2];
+                    rangeTemp.Value = arrDataTyokyou;
+                    cell1 = wsTemplate.Cells[3, 4];
+                    cell2 = wsTemplate.Cells[3 + cntRow - 1, 12];
+                    rangeTemp = wsTemplate.Range[cell1, cell2];
+                    rangeTemp.Value = arrdblDataTyokyou;
 
                     // ファイル名の入力
                     wsTemplate.Cells[1, 1] = "TrainData_" +
@@ -223,13 +238,13 @@ namespace getJVLInkData
                     // 小数点の表示
                     usedRangeTemp = wsTemplate.UsedRange;
                     cell1 = wsTemplate.Cells[3, 5];
-                    cell2 = wsTemplate.Cells[usedRangeTemp.Rows.Count, 12];
+                    cell2 = wsTemplate.Cells[3 + cntRow - 1, 12];
                     rangeTemp = wsTemplate.Range[cell1, cell2];
                     rangeTemp.NumberFormatLocal = "0.0";
 
                     // 昇順ソート
                     cell1 = wsTemplate.Cells[3, 1];
-                    cell2 = wsTemplate.Cells[usedRangeTemp.Rows.Count, 12];
+                    cell2 = wsTemplate.Cells[3 + cntRow - 1, 12];
                     rangeTemp = wsTemplate.Range[cell1, cell2];
                     rangeTemp.Sort(wsTemplate.Cells[3, 12], XlSortOrder.xlAscending);
 
@@ -271,6 +286,10 @@ namespace getJVLInkData
             this.AxJVLink1.JVClose();
             System.Media.SystemSounds.Asterisk.Play();
             this.prgDownload.Value = 100;
+
+            this.button1.Enabled = true;
+            this.dateTimePicker1.Enabled = true;
+            this.btnGetJVData.Enabled = true;
         }
 
         private List<string> GetPlaceInfoX(DateTime datetimeTarg)
@@ -682,12 +701,8 @@ namespace getJVLInkData
             return strArray;
         }
 
-        private void PutTyoukyouDataAllX(
-      DateTime datetimeTarg,
-      string[] dataTyokyo,
-      List<cRaceUma> ListUmas,
-      out string[,] arrDataTyokyou,
-      out double[,] arrdblDataTyokyou)
+        private long PutTyoukyouDataAllX(DateTime datetimeTarg, string[] dataTyokyo, 
+            List<cRaceUma> ListUmas, out string[,] arrDataTyokyou, out double[,] arrdblDataTyokyou)
         {
             arrDataTyokyou = new string[2000, 3];
             arrdblDataTyokyou = new double[2000, 9];
@@ -702,7 +717,8 @@ namespace getJVLInkData
                         {
                             JVData_Struct.JV_HC_HANRO jvHcHanro = new JVData_Struct.JV_HC_HANRO();
                             jvHcHanro.SetDataB(ref dataTyokyo[index2]);
-                            string codeName = this.objCodeConv.GetCodeName("2301", jvHcHanro.TresenKubun + 1, (short)2);
+                            string TresenKubun = (int.Parse(jvHcHanro.TresenKubun) + 1).ToString();
+                            string codeName = this.objCodeConv.GetCodeName("2301",TresenKubun, (short)2);
                             arrDataTyokyou[index1, 0] = codeName;
                             arrDataTyokyou[index1, 1] = jvHcHanro.ChokyoDate.Year + jvHcHanro.ChokyoDate.Month + jvHcHanro.ChokyoDate.Day;
                             string bamei = listUma.Bamei;
@@ -722,6 +738,7 @@ namespace getJVLInkData
                     }
                 }
             }
+            return index1;
         }
 
 
