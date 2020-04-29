@@ -296,11 +296,10 @@ namespace getJVLInkData
                 string dataspec = "YSCH";
                 TimeSpan timeSpan = new TimeSpan(1, 0, 0, 0);
                 string str = (datetimeTarg - timeSpan).ToString("yyyyMMdd");
-                int year1 = DateTime.Now.Year;
-                int year2 = datetimeTarg.AddYears(1).Year;
+                int option = DateTime.Now > datetimeTarg.AddYears(1) ? 4 : 1;
                 int readcount = 0;
                 int downloadcount = 0;
-                int num1 = this.AxJVLink1.JVOpen(dataspec, str + "000000", 1, ref readcount, ref downloadcount, out string _);
+                int num1 = this.AxJVLink1.JVOpen(dataspec, str + "000000", option, ref readcount, ref downloadcount, out string _);
                 if (num1 != 0)
                 {
                     int num2 = (int)MessageBox.Show("JVOpen エラー：" + (object)num1);
@@ -400,7 +399,7 @@ namespace getJVLInkData
                 string dataspec = "RACE";
                 TimeSpan timeSpan = new TimeSpan(1, 0, 0, 0);
                 string str = (datetimeTarg - timeSpan).ToString("yyyyMMdd");
-                int option = DateTime.Now.Year > datetimeTarg.AddYears(1).Year ? 4 : 1;
+                int option = DateTime.Now > datetimeTarg.AddYears(1) ? 4 : 1;
                 int readcount = 0;
                 int downloadcount = 0;
                 int num1 = this.AxJVLink1.JVOpen(dataspec, str + "000000", option, ref readcount, ref downloadcount, out string _);
@@ -506,7 +505,7 @@ namespace getJVLInkData
                 string dataspec = "RACE";
                 TimeSpan timeSpan = new TimeSpan(1, 0, 0, 0);
                 string str = (datetimeTarg - timeSpan).ToString("yyyyMMdd");
-                int option = DateTime.Now.Year > datetimeTarg.AddYears(1).Year ? 4 : 1;
+                int option = DateTime.Now > datetimeTarg.AddYears(1) ? 4 : 1;
                 int readcount = 0;
                 int downloadcount = 0;
                 int num1 = this.AxJVLink1.JVOpen(dataspec, str + "000000", option, ref readcount, ref downloadcount, out string _);
@@ -619,11 +618,7 @@ namespace getJVLInkData
                 TimeSpan timeSpan1 = new TimeSpan(181, 0, 0, 0);
                 DateTime dateTime1 = datetimeTarg - timeSpan1;
                 string str = dateTime1.ToString("yyyyMMdd");
-                dateTime1 = DateTime.Now;
-                int year1 = dateTime1.Year;
-                dateTime1 = datetimeTarg.AddYears(1);
-                int year2 = dateTime1.Year;
-                int option = year1 > year2 ? 4 : 1;
+                int option = DateTime.Now > datetimeTarg.AddYears(1) ? 4 : 1;
                 int readcount = 0;
                 int downloadcount = 0;
                 int num1 = this.AxJVLink1.JVOpen(dataspec, str + "000000", option, ref readcount, ref downloadcount, out string _);
@@ -760,13 +755,12 @@ namespace getJVLInkData
                 this.tmrDownload.Enabled = false;
                 this.prgJVRead.Value = 0;
                 string dataspec = "YSCH";
-                TimeSpan timeSpan = new TimeSpan(4, 0, 0, 0);
+                TimeSpan timeSpan = new TimeSpan(1, 0, 0, 0);
                 string str = (datetimeTarg - timeSpan).ToString("yyyyMMdd");
-                int year1 = DateTime.Now.Year;
-                int year2 = datetimeTarg.AddYears(1).Year;
+                int option = DateTime.Now > datetimeTarg.AddYears(1) ? 4 : 1;
                 int readcount = 0;
                 int downloadcount = 0;
-                int num1 = this.AxJVLink1.JVOpen(dataspec, str + "000000", 1, ref readcount, ref downloadcount, out string _);
+                int num1 = this.AxJVLink1.JVOpen(dataspec, str + "000000", option, ref readcount, ref downloadcount, out string _);
                 if (num1 != 0)
                 {
                     int num2 = (int)MessageBox.Show("JVOpen エラー：" + (object)num1);
