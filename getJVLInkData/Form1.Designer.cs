@@ -46,6 +46,7 @@
             this.prgDownload = new System.Windows.Forms.ProgressBar();
             this.rtbData = new System.Windows.Forms.RichTextBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AxJVLink1)).BeginInit();
             this.SuspendLayout();
@@ -78,10 +79,10 @@
             // AxJVLink1
             // 
             this.AxJVLink1.Enabled = true;
-            this.AxJVLink1.Location = new System.Drawing.Point(460, 31);
+            this.AxJVLink1.Location = new System.Drawing.Point(460, 2);
             this.AxJVLink1.Name = "AxJVLink1";
             this.AxJVLink1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("AxJVLink1.OcxState")));
-            this.AxJVLink1.Size = new System.Drawing.Size(192, 192);
+            this.AxJVLink1.Size = new System.Drawing.Size(68, 63);
             this.AxJVLink1.TabIndex = 1;
             // 
             // label1
@@ -143,7 +144,7 @@
             // btnGetJVData
             // 
             this.btnGetJVData.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGetJVData.Location = new System.Drawing.Point(16, 161);
+            this.btnGetJVData.Location = new System.Drawing.Point(16, 189);
             this.btnGetJVData.Name = "btnGetJVData";
             this.btnGetJVData.Size = new System.Drawing.Size(75, 44);
             this.btnGetJVData.TabIndex = 3;
@@ -153,14 +154,14 @@
             // 
             // prgJVRead
             // 
-            this.prgJVRead.Location = new System.Drawing.Point(97, 184);
+            this.prgJVRead.Location = new System.Drawing.Point(97, 212);
             this.prgJVRead.Name = "prgJVRead";
             this.prgJVRead.Size = new System.Drawing.Size(419, 21);
             this.prgJVRead.TabIndex = 6;
             // 
             // prgDownload
             // 
-            this.prgDownload.Location = new System.Drawing.Point(97, 161);
+            this.prgDownload.Location = new System.Drawing.Point(97, 189);
             this.prgDownload.Name = "prgDownload";
             this.prgDownload.Size = new System.Drawing.Size(419, 21);
             this.prgDownload.TabIndex = 6;
@@ -168,7 +169,7 @@
             // rtbData
             // 
             this.rtbData.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rtbData.Location = new System.Drawing.Point(16, 211);
+            this.rtbData.Location = new System.Drawing.Point(16, 239);
             this.rtbData.Name = "rtbData";
             this.rtbData.Size = new System.Drawing.Size(500, 140);
             this.rtbData.TabIndex = 7;
@@ -186,11 +187,23 @@
             this.button2.Visible = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.checkBox1.Location = new System.Drawing.Point(60, 164);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(102, 19);
+            this.checkBox1.TabIndex = 8;
+            this.checkBox1.Text = "個別データ出力";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(528, 361);
+            this.ClientSize = new System.Drawing.Size(528, 401);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.rtbData);
             this.Controls.Add(this.prgDownload);
             this.Controls.Add(this.prgJVRead);
@@ -234,6 +247,7 @@
         private System.Windows.Forms.ProgressBar prgDownload;
         private System.Windows.Forms.RichTextBox rtbData;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

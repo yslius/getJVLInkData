@@ -242,6 +242,17 @@ namespace getJVLInkData
                     wsCSV.Cells[rowWrite, 1].PasteSpecial(XlPasteType.xlPasteValues);
                     rowWrite += 22;
 
+                    // 個別ファイル出力
+                    if (checkBox1.Checked)
+                    {
+                        cell1 = wsTemplate.Cells[3, 1];
+                        cell2 = wsTemplate.Cells[3 + cntRow - 1, 12];
+                        rangeTemp = wsTemplate.Range[cell1, cell2];
+                        object[,] arrTmp = rangeTemp.Value;
+                        operateCsv.ConvertObjectToCsv(arrTmp, text + str5);
+                    }
+
+
                     //appExl.DisplayAlerts = false;
                     //wbTemplate.Save();
                     //appExl.DisplayAlerts = true;
