@@ -28,7 +28,8 @@ namespace getJVLInkData
             int num = this.AxJVLink1.JVInit(sid);
             if (num != 0)
             {
-                MessageBox.Show("JVInit エラー コード：" + num + "：", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                MessageBox.Show("JVInit エラー コード：" + num + "：", "エラー", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 this.Cursor = Cursors.Default;
             }
             this.objCodeConv = new clsCodeConv();
@@ -48,7 +49,8 @@ namespace getJVLInkData
 
                 if (nReturnCode != 0)
                 {
-                    MessageBox.Show("JVSetUIPropertiesエラー コード：" + nReturnCode + "：", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("JVSetUIPropertiesエラー コード：" + 
+                        nReturnCode + "：", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
@@ -60,7 +62,8 @@ namespace getJVLInkData
         {
             this.dateTimePicker1.Enabled = true;
             this.rtbData.Text = "";
-            CommonOpenFileDialog commonOpenFileDialog = new CommonOpenFileDialog("保存するフォルダを選択してください");
+            CommonOpenFileDialog commonOpenFileDialog = 
+                new CommonOpenFileDialog("保存するフォルダを選択してください");
             commonOpenFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
             commonOpenFileDialog.IsFolderPicker = true;
             if (commonOpenFileDialog.ShowDialog() != CommonFileDialogResult.Ok)
@@ -79,7 +82,8 @@ namespace getJVLInkData
                         DateTime dateTime = DateTime.Parse(strArray[0]);
                         this.dateTimePicker1.Value = dateTime;
                         this.dateTimePicker1.Enabled = false;
-                        this.rtbData.Text = "フォルダ内の出馬表から日付を読み取りました。 " + dateTime.ToLongDateString();
+                        this.rtbData.Text = "フォルダ内の出馬表から日付を読み取りました。 " + 
+                            dateTime.ToLongDateString();
                         flag = true;
                     }
                     catch (Exception ex)
@@ -96,15 +100,28 @@ namespace getJVLInkData
 
         }
 
+        private void enableButton()
+        {
+            this.button1.Enabled = true;
+            this.dateTimePicker1.Enabled = true;
+            this.btnGetJVData.Enabled = true;
+        }
+
+        private void disableButton()
+        {
+            this.button1.Enabled = false;
+            this.dateTimePicker1.Enabled = false;
+            this.btnGetJVData.Enabled = false;
+        }
+
         private void btnGetJVData_Click(object sender, EventArgs e)
         {
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
+            this.rtbData.Text = string.Format("調教データ取得開始しました。");
+            disableButton();
 
-            this.button1.Enabled = false;
-            this.dateTimePicker1.Enabled = false;
-            this.btnGetJVData.Enabled = false;
-
+            bool isReal = false;
             int index1 = 0;
             int index2 = 0;
             string str1 = System.Windows.Forms.Application.StartupPath + "\\";
@@ -133,20 +150,41 @@ namespace getJVLInkData
             {
                 System.Media.SystemSounds.Asterisk.Play();
                 int num2 = (int)MessageBox.Show("保存するフォルダを選択してください。");
+                enableButton();
                 return;
             }
 
             string text = this.textBox1.Text;
             this.prgDownload.Maximum = 100;
             this.prgDownload.Value = 0;
+            //if (this.isRunRaceReal(datetimeTarg))
+            //{
+            //    isReal = true;
+            //}
+            // リアルタイムデータか判別する　VBAと挙動が異なる
+            TimeSpan timeSpan = new TimeSpan(7, 0, 0, 0);
+            if(datetimeTarg > DateTime.Now - timeSpan)
+            {
+                isReal = true;
+            }
+
             if (!this.isRunRace(datetimeTarg))
             {
                 System.Media.SystemSounds.Asterisk.Play();
                 int num3 = (int)MessageBox.Show("レースが存在しません。");
+                enableButton();
                 return;
             }
 
-            List<string> placeInfoX = this.GetPlaceInfoX(datetimeTarg);
+            List<string> placeInfoX;
+            if (isReal)
+            {
+                placeInfoX = this.GetPlaceInfoReal(datetimeTarg);
+            }
+            else
+            {
+                placeInfoX = this.GetPlaceInfoX(datetimeTarg);
+            }
             if (placeInfoX.Count == 0)
             {
                 System.Media.SystemSounds.Asterisk.Play();
@@ -160,7 +198,9 @@ namespace getJVLInkData
                 stringListListList.Add(raceNumInfoX);
                 foreach (List<string> stringList3 in raceNumInfoX)
                 {
-                    this.rtbData.Text = "出走馬取得中... " + collplace.Replace("競馬場", "") + Strings.StrConv(stringList3[0], VbStrConv.Wide, 0);
+                    this.rtbData.Text = "出走馬取得中... " + 
+                        collplace.Replace("競馬場", "") + 
+                        Strings.StrConv(stringList3[0], VbStrConv.Wide, 0);
                     List<cRaceUma> raceUmaX = this.GetRaceUmaX(datetimeTarg, collplace, stringList3[0]);
                     cRaceUmaListList.Add(raceUmaX);
                     ++num1;
@@ -292,6 +332,93 @@ namespace getJVLInkData
             sw.Stop();
             TimeSpan ts = sw.Elapsed;
             this.rtbData.Text = $"処理時間：{(ts.Minutes*60) + ts.Seconds}秒";
+        }
+
+        private List<string> GetPlaceInfoReal(DateTime datetimeTarg)
+        {
+            List<string> stringList = new List<string>();
+            JVData_Struct.JV_RA_RACE jvRaRace = new JVData_Struct.JV_RA_RACE();
+            int size = 110000;
+            int count = 256;
+            string dataspec = "0B15";
+            TimeSpan timeSpan = new TimeSpan(0, 0, 0, 0);
+
+            string str = (datetimeTarg - timeSpan).ToString("yyyyMMdd");
+            int num1 = this.AxJVLink1.JVRTOpen(dataspec, str);
+            if (num1 != 0)
+            {
+                int num2 = (int)MessageBox.Show("JVOpen エラー：" + (object)num1);
+            }
+            else
+            {
+                bool flag = false;
+                bool isFind = false;
+                do
+                {
+                    System.Windows.Forms.Application.DoEvents();
+                    string buff = new string(char.MinValue, size);
+                    string filename = new string(char.MinValue, count);
+                    switch (this.AxJVLink1.JVRead(out buff, out size, out filename))
+                    {
+                        case -503:
+                            int num3 = (int)MessageBox.Show(filename + "が存在しません。");
+                            flag = true;
+                            goto case -3;
+                        case -203:
+                            int num4 = (int)MessageBox.Show("JVOpen が行われていません。");
+                            flag = true;
+                            goto case -3;
+                        case -201:
+                            int num5 = (int)MessageBox.Show("JVInit が行われていません。");
+                            flag = true;
+                            goto case -3;
+                        case -3:
+                            continue;
+                        case -1:
+                            ++this.prgJVRead.Value;
+                            goto case -3;
+                        case 0:
+                            this.prgJVRead.Value = this.prgJVRead.Maximum;
+                            flag = true;
+                            goto case -3;
+                        default:
+                            if (buff.Substring(0, 2) == "RA")
+                            {
+                                jvRaRace.SetDataB(ref buff);
+                                DateTime dateTime = DateTime.Parse((jvRaRace.id.Year + jvRaRace.id.MonthDay).Insert(4, "/").Insert(7, "/"));
+                                int num6 = dateTime > datetimeTarg ? 1 : 0;
+                                string codeName = this.objCodeConv.GetCodeName("2001", jvRaRace.id.JyoCD, (short)1);
+                                if (dateTime.Date == datetimeTarg.Date)
+                                {
+                                    isFind = false;
+                                    foreach (string ele in stringList)
+                                    {
+                                        if (ele == codeName)
+                                        {
+                                            isFind = true;
+                                        }
+                                    }
+                                    if (!isFind)
+                                    {
+                                        stringList.Add(codeName);
+                                        goto case -3;
+                                    }
+                                }
+                                else
+                                    goto case -3;
+                            }
+                            goto case -3;
+                    }
+                }
+                while (!flag);
+            }
+            int num7 = this.AxJVLink1.JVClose();
+            if (num7 != 0)
+            {
+                int num8 = (int)MessageBox.Show("JVClose エラー：" + (object)num7);
+            }
+            this.prgJVRead.Value = this.prgJVRead.Maximum;
+            return stringList;
         }
 
         private List<string> GetPlaceInfoX(DateTime datetimeTarg)
@@ -754,6 +881,23 @@ namespace getJVLInkData
             return index1;
         }
 
+        private bool isRunRaceReal(DateTime datetimeTarg)
+        {
+            string dataspec = "0B14";
+            TimeSpan timeSpan = new TimeSpan(0, 0, 0, 0);
+            string str = (datetimeTarg - timeSpan).ToString("yyyyMMdd");
+            int num1 = this.AxJVLink1.JVRTOpen(dataspec, str);
+            int num2 = this.AxJVLink1.JVClose();
+            if (num2 != 0)
+            {
+                int num3 = (int)MessageBox.Show("JVClose エラー：" + (object)num2);
+            }
+            if (num1 != 0)
+            {
+                return false;
+            }
+            return true;
+        }
 
         private bool isRunRace(DateTime datetimeTarg)
         {
@@ -766,7 +910,7 @@ namespace getJVLInkData
                 this.tmrDownload.Enabled = false;
                 this.prgJVRead.Value = 0;
                 string dataspec = "YSCH";
-                TimeSpan timeSpan = new TimeSpan(1, 0, 0, 0);
+                TimeSpan timeSpan = new TimeSpan(7, 0, 0, 0);
                 string str = (datetimeTarg - timeSpan).ToString("yyyyMMdd");
                 int option = DateTime.Now > datetimeTarg.AddYears(1) ? 4 : 1;
                 int readcount = 0;
