@@ -171,7 +171,7 @@ namespace getJVLInkData
             if (!this.isRunRace(datetimeTarg))
             {
                 System.Media.SystemSounds.Asterisk.Play();
-                int num3 = (int)MessageBox.Show("レースが存在しません。");
+                int num3 = (int)MessageBox.Show("エラー");
                 enableButton();
                 return;
             }
@@ -188,7 +188,8 @@ namespace getJVLInkData
             if (placeInfoX.Count == 0)
             {
                 System.Media.SystemSounds.Asterisk.Play();
-                int num4 = (int)MessageBox.Show("レースが存在しません。");
+                int num4 = (int)MessageBox.Show("エラー：会場が取得できません。");
+                enableButton();
                 return;
             }
 
@@ -980,7 +981,7 @@ namespace getJVLInkData
             }
             if (flag1)
                 return true;
-            int num8 = (int)MessageBox.Show("選択した日付の開催はありません。");
+            //int num8 = (int)MessageBox.Show("選択した日付の開催はありません。");
             return false;
         }
 
