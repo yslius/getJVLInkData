@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="clsCodeConv.cs" />
-    <Compile Include="clsReflect.cs" />
+    <Compile Include="clsTrain.cs" />
     <Compile Include="cRaceUma.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

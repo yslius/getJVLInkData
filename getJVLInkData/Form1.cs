@@ -1043,5 +1043,23 @@ namespace getJVLInkData
             //Marshal.ReleaseComObject(workbook1);
             Marshal.ReleaseComObject(appExl);
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.rtbData.Text = "";
+            CommonOpenFileDialog commonOpenFileDialog =
+                new CommonOpenFileDialog("フォルダを選択してください");
+            commonOpenFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            commonOpenFileDialog.IsFolderPicker = true;
+            if (commonOpenFileDialog.ShowDialog() != CommonFileDialogResult.Ok)
+                return;
+            this.textBox2.Text = commonOpenFileDialog.FileName + "\\";
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            clsTrain cTrain = new clsTrain(this);
+            cTrain.ReflectTrainMain();
+        }
     }
 }
