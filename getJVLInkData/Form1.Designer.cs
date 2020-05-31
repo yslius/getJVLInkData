@@ -267,7 +267,6 @@
             // 
             // button4
             // 
-            this.button4.Enabled = false;
             this.button4.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button4.Location = new System.Drawing.Point(25, 41);
             this.button4.Name = "button4";
@@ -279,7 +278,6 @@
             // 
             // button5
             // 
-            this.button5.Enabled = false;
             this.button5.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button5.Location = new System.Drawing.Point(25, 90);
             this.button5.Name = "button5";
@@ -307,6 +305,7 @@
             this.Controls.Add(this.rtbData);
             this.Controls.Add(this.AxJVLink1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "JV-Link調教データ取得ツール";
@@ -325,29 +324,29 @@
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private AxJVDTLabLib.AxJVLink AxJVLink1;
-        private System.Windows.Forms.ToolStripMenuItem mnuConfig;
-        private System.Windows.Forms.ToolStripMenuItem mnuConfJV;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Timer tmrDownload;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button btnGetJVData;
-        private System.Windows.Forms.ProgressBar prgJVRead;
-        private System.Windows.Forms.ProgressBar prgDownload;
-        private System.Windows.Forms.RichTextBox rtbData;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
+        public System.Windows.Forms.MenuStrip menuStrip1;
+        public AxJVDTLabLib.AxJVLink AxJVLink1;
+        public System.Windows.Forms.ToolStripMenuItem mnuConfig;
+        public System.Windows.Forms.ToolStripMenuItem mnuConfJV;
+        public System.Windows.Forms.Label label1;
+        public System.Windows.Forms.Button button1;
+        public System.Windows.Forms.Timer tmrDownload;
+        public System.Windows.Forms.TextBox textBox1;
+        public System.Windows.Forms.Label label2;
+        public System.Windows.Forms.DateTimePicker dateTimePicker1;
+        public System.Windows.Forms.Label label3;
+        public System.Windows.Forms.Button btnGetJVData;
+        public System.Windows.Forms.ProgressBar prgJVRead;
+        public System.Windows.Forms.ProgressBar prgDownload;
+        public System.Windows.Forms.RichTextBox rtbData;
+        public System.Windows.Forms.Button button2;
+        public System.Windows.Forms.CheckBox checkBox1;
+        public System.Windows.Forms.GroupBox groupBox1;
+        public System.Windows.Forms.GroupBox groupBox2;
+        public System.Windows.Forms.Label label5;
+        public System.Windows.Forms.Label label4;
+        public System.Windows.Forms.Button button4;
+        public System.Windows.Forms.Button button5;
         public System.Windows.Forms.TextBox textBox2;
     }
 }

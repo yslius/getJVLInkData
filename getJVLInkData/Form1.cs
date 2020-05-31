@@ -15,6 +15,7 @@ namespace getJVLInkData
         private int nDownloadCount;
         private bool JVOpenFlg;
         private clsCodeConv objCodeConv;
+        private OperateForm cOperateForm;
         private Timer timer;
 
         public Form1()
@@ -34,6 +35,8 @@ namespace getJVLInkData
             }
             this.objCodeConv = new clsCodeConv();
             this.objCodeConv.FileName = System.Windows.Forms.Application.StartupPath + "\\CodeTable.csv";
+
+            cOperateForm = new OperateForm(this);
 
         }
 
@@ -100,14 +103,14 @@ namespace getJVLInkData
 
         }
 
-        private void enableButton()
+        public void enableButton()
         {
             this.button1.Enabled = true;
             this.dateTimePicker1.Enabled = true;
             this.btnGetJVData.Enabled = true;
         }
 
-        private void disableButton()
+        public void disableButton()
         {
             this.button1.Enabled = false;
             this.dateTimePicker1.Enabled = false;
@@ -119,7 +122,7 @@ namespace getJVLInkData
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             this.rtbData.Text = string.Format("調教データ取得開始しました。");
-            disableButton();
+            cOperateForm.disableButton();
 
             bool isReal = false;
             int index1 = 0;
@@ -150,7 +153,7 @@ namespace getJVLInkData
             {
                 System.Media.SystemSounds.Asterisk.Play();
                 int num2 = (int)MessageBox.Show("保存するフォルダを選択してください。");
-                enableButton();
+                cOperateForm.enableButton();
                 return;
             }
 
@@ -172,7 +175,7 @@ namespace getJVLInkData
             {
                 System.Media.SystemSounds.Asterisk.Play();
                 int num3 = (int)MessageBox.Show("エラー");
-                enableButton();
+                cOperateForm.enableButton();
                 return;
             }
 
@@ -189,7 +192,7 @@ namespace getJVLInkData
             {
                 System.Media.SystemSounds.Asterisk.Play();
                 int num4 = (int)MessageBox.Show("エラー：会場が取得できません。");
-                enableButton();
+                cOperateForm.enableButton();
                 return;
             }
 
@@ -326,9 +329,7 @@ namespace getJVLInkData
             System.Media.SystemSounds.Asterisk.Play();
             this.prgDownload.Value = 100;
 
-            this.button1.Enabled = true;
-            this.dateTimePicker1.Enabled = true;
-            this.btnGetJVData.Enabled = true;
+            cOperateForm.enableButton();
 
             sw.Stop();
             TimeSpan ts = sw.Elapsed;
