@@ -73,7 +73,7 @@ namespace getJVLInkData
             listRcsv = ReadCSV(pathFileR);
 
             // 追加項目を記入
-            listRcsv = WriteAddHeadData(listRcsv);
+            //listRcsv = WriteAddHeadData(listRcsv);
 
             // 追加項目を記入
             listRcsv = CopyTraindataToRacecard(listTcsv, listRcsv);
