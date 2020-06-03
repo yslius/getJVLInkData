@@ -32,7 +32,7 @@ namespace getJVLInkData
         public void ReflectTrainMain()
         {
             cOperateForm.disableButton();
-            _form1.rtbData.Text = "";
+            //_form1.rtbData.Text = "";
 
             //Console.WriteLine(_form1.textBox2.Text);
             string pathTarg;
@@ -41,7 +41,7 @@ namespace getJVLInkData
             List<string> listTcsv;
             List<string> listRcsv;
 
-            pathTarg = _form1.textBox2.Text;
+            pathTarg = _form1.textBox1.Text;
 
             // 調教データの読み込み
             pathFileT = getTrainDataFile(pathTarg);
@@ -81,7 +81,7 @@ namespace getJVLInkData
             // ファイル出力
             OutputCsv(pathFileR, listRcsv);
 
-            _form1.rtbData.Text = "調教データ反映完了しました。";
+            //_form1.rtbData.Text = "調教データ反映完了しました。";
 
             cOperateForm.enableButton();
 

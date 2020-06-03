@@ -121,7 +121,11 @@ namespace getJVLInkData
         {
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
-            this.rtbData.Text = string.Format("調教データ取得開始しました。");
+            DateTime dt = DateTime.Now;
+            string strlogS;
+            strlogS = dt.ToString("HH:mm:ss") + 
+                " 調教データ取得開始しました。";
+            this.rtbData.Text = strlogS;
             cOperateForm.disableButton();
 
             bool isReal = false;
@@ -324,16 +328,34 @@ namespace getJVLInkData
             Marshal.ReleaseComObject(wbCSV);
             Marshal.ReleaseComObject(appExl);
 
-            this.rtbData.Text = str4 + " 調教データ取得完了しました。";
+            dt = DateTime.Now;
+            this.rtbData.Text = strlogS;
+            this.rtbData.Text += "\n";
+            this.rtbData.Text += dt.ToString("HH:mm:ss") + " " + 
+                str4 + "調教データ取得完了しました。";
             this.AxJVLink1.JVClose();
             System.Media.SystemSounds.Asterisk.Play();
             this.prgDownload.Value = 100;
+            System.Threading.Thread.Sleep(500);
+
+            // 調教データ反映
+            if (checkBox2.Checked)
+            {
+                clsTrain cTrain = new clsTrain(this);
+                cTrain.ReflectTrainMain();
+                dt = DateTime.Now;
+                this.rtbData.Text += "\n";
+                this.rtbData.Text += dt.ToString("HH:mm:ss") + " " +
+                str4 + "調教データ反映完了しました。";
+                this.AxJVLink1.JVClose();
+                System.Media.SystemSounds.Asterisk.Play();
+            }
 
             cOperateForm.enableButton();
 
             sw.Stop();
             TimeSpan ts = sw.Elapsed;
-            this.rtbData.Text = $"処理時間：{(ts.Minutes*60) + ts.Seconds}秒";
+            this.rtbData.Text += $"\n処理時間：{(ts.Minutes*60) + ts.Seconds}秒";
         }
 
         private List<string> GetPlaceInfoReal(DateTime datetimeTarg)
@@ -1043,18 +1065,6 @@ namespace getJVLInkData
             //Marshal.ReleaseComObject(worksheet1);
             //Marshal.ReleaseComObject(workbook1);
             Marshal.ReleaseComObject(appExl);
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            this.rtbData.Text = "";
-            CommonOpenFileDialog commonOpenFileDialog =
-                new CommonOpenFileDialog("フォルダを選択してください");
-            commonOpenFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
-            commonOpenFileDialog.IsFolderPicker = true;
-            if (commonOpenFileDialog.ShowDialog() != CommonFileDialogResult.Ok)
-                return;
-            this.textBox2.Text = commonOpenFileDialog.FileName + "\\";
         }
 
         private void button5_Click(object sender, EventArgs e)

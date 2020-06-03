@@ -18,8 +18,6 @@ namespace getJVLInkData
             _form1.button1.Enabled = true;
             _form1.dateTimePicker1.Enabled = true;
             _form1.btnGetJVData.Enabled = true;
-            _form1.button4.Enabled = true;
-            _form1.button5.Enabled = true;
         }
 
         public void disableButton()
@@ -27,8 +25,6 @@ namespace getJVLInkData
             _form1.button1.Enabled = false;
             _form1.dateTimePicker1.Enabled = false;
             _form1.btnGetJVData.Enabled = false;
-            _form1.button4.Enabled = false;
-            _form1.button5.Enabled = false;
         }
     }
 }
