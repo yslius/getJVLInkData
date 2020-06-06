@@ -73,26 +73,44 @@ namespace getJVLInkData
                 return;
             this.textBox1.Text = commonOpenFileDialog.FileName + "\\";
             string path = commonOpenFileDialog.FileName + "\\01出馬表.csv";
+
+            
             if (File.Exists(path))
             {
-                StreamReader streamReader = new StreamReader(path, Encoding.GetEncoding("shift_jis"));
                 bool flag = false;
-                while (!flag)
+                try
                 {
-                    string[] strArray = streamReader.ReadLine().Split(',');
-                    try
+                    int cnt = 0;
+                    StreamReader streamReader = new StreamReader(path, Encoding.GetEncoding("shift_jis"));
+
+                    while (cnt <= 2)
                     {
+                        string[] strArray = streamReader.ReadLine().Split(',');
+                        cnt++;
+                        if (cnt != 2)
+                            continue;
                         DateTime dateTime = DateTime.Parse(strArray[0]);
                         this.dateTimePicker1.Value = dateTime;
                         this.dateTimePicker1.Enabled = false;
-                        this.rtbData.Text = "フォルダ内の出馬表から日付を読み取りました。 " + 
+                        this.rtbData.Text = "フォルダ内の出馬表から日付を読み取りました。 " +
                             dateTime.ToLongDateString();
                         flag = true;
                     }
-                    catch (Exception ex)
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.Contains("別のプロセスで"))
                     {
-                        Console.WriteLine((object)ex);
+                        MessageBox.Show("出馬表を閉じてください。", "エラー",
+                                MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     }
+                    else
+                    {
+                        MessageBox.Show(ex.Message, "エラー",
+                                MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    }
+                    return;
+
                 }
                 if (flag)
                     return;
@@ -119,6 +137,25 @@ namespace getJVLInkData
 
         private void btnGetJVData_Click(object sender, EventArgs e)
         {
+            if (this.textBox1.Text == "")
+            {
+                System.Media.SystemSounds.Asterisk.Play();
+                int num2 = (int)MessageBox.Show("保存するフォルダを選択してください。");
+                cOperateForm.enableButton();
+                return;
+            }
+
+            clsTrain cTrain = new clsTrain(this);
+            // 出馬表の読み込み
+            if (checkBox2.Checked)
+            {
+                if (cTrain.GetRaceCardFile(this.textBox1.Text) == "")
+                {
+                    cOperateForm.enableButton();
+                    return;
+                }
+            }
+
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             DateTime dt = DateTime.Now;
@@ -151,15 +188,6 @@ namespace getJVLInkData
             Workbook wbTemplate = null;
             Worksheet wsCSV = null;
             Worksheet wsTemplate = null;
-
-
-            if (this.textBox1.Text == "")
-            {
-                System.Media.SystemSounds.Asterisk.Play();
-                int num2 = (int)MessageBox.Show("保存するフォルダを選択してください。");
-                cOperateForm.enableButton();
-                return;
-            }
 
             string text = this.textBox1.Text;
             this.prgDownload.Maximum = 100;
@@ -341,7 +369,7 @@ namespace getJVLInkData
             // 調教データ反映
             if (checkBox2.Checked)
             {
-                clsTrain cTrain = new clsTrain(this);
+                
                 cTrain.ReflectTrainMain();
                 dt = DateTime.Now;
                 this.rtbData.Text += "\n";

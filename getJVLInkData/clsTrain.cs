@@ -220,7 +220,7 @@ namespace getJVLInkData
             return true;
         }
 
-        string GetRaceCardFile(string pathTarg)
+        public string GetRaceCardFile(string pathTarg)
         {
             string path = pathTarg + "01出馬表.csv";
             if (!File.Exists(path))
