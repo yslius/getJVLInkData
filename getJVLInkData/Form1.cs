@@ -67,7 +67,7 @@ namespace getJVLInkData
             this.rtbData.Text = "";
             CommonOpenFileDialog commonOpenFileDialog = 
                 new CommonOpenFileDialog("保存するフォルダを選択してください");
-            commonOpenFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            //commonOpenFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
             commonOpenFileDialog.IsFolderPicker = true;
             if (commonOpenFileDialog.ShowDialog() != CommonFileDialogResult.Ok)
                 return;
